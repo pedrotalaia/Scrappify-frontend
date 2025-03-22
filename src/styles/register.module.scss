@@ -1,0 +1,102 @@
+/* styles/register.module.scss */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(to right, #041643, #1c2c4c);
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; 
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #041643;
+  margin-bottom: 5px; 
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; 
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.input {
+  width: 95%;  /* Reduz a largura dos inputs para 80% */
+  margin: 0 auto; /* Centraliza os inputs */
+  padding: 10px; /* Ajusta o espaçamento interno */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.input:focus {
+  border-color: #041643;
+  outline: none;
+}
+
+.submitButton,
+.googleButton {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+
+.submitButton {
+  background-color: #041643;
+  color: white;
+}
+
+.submitButton:hover {
+  background-color: #062266;
+}
+
+.googleButton {
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+}
+
+.googleButton:hover {
+  background-color: #f7f7f7;
+}
+
+.loginPrompt {
+  margin-top: 5px;
+  font-size: 14px;
+  color: black;
+}
+
+.loginLink {
+  color: #041643;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.loginLink:hover {
+  text-decoration: underline;
+}

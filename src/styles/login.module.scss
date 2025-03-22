@@ -1,0 +1,112 @@
+// Fundo com gradiente azul escuro (#041643)
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(to right, #041643, #1c2c4c);
+  }
+  
+  // Estilo do card de login
+  .formWrapper {
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+  }
+  
+  // Título
+  .title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #041643;
+    margin-bottom: 20px;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+  }
+  
+  // Grupo de inputs (label + campo)
+  .inputGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  // Inputs estilizados
+  .input {
+    width: 95%;  // Ajustado para 80% para centralizar
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+  }
+  
+  // Botão de login
+  .submitButton,
+  .googleButton {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+  .submitButton {
+    background-color: #041643;
+    color: white;
+  }
+  
+  .submitButton:hover {
+    background-color: #062266;
+  }
+  
+  .googleButton {
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+  }
+  
+  .googleButton:hover {
+    background-color: #f7f7f7;
+  }
+  
+  // Mensagem de erro
+  .error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  // Link para registro
+  .registerPrompt {
+    margin-top: 15px;
+    font-size: 14px;
+  }
+  
+  .registerLink {
+    color: #041643;
+    font-weight: bold;
+    text-decoration: none;
+  
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
