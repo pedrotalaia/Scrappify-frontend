@@ -37,6 +37,10 @@ export default function Register() {
     }
   };
 
+  const handleGoogleRegister = () => {
+    window.location.href = 'http://localhost:5000/api/auth/google';
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.formWrapper}>
@@ -77,7 +81,9 @@ export default function Register() {
           <button type="submit" className={styles.submitButton}>
             Sign Up
           </button>
-          <button className={styles.googleButton}>Sign Up with Google</button>
+          <button type="button" className={styles.googleButton} onClick={handleGoogleRegister}>
+            Sign Up with Google
+          </button>
         </form>
         <p className={styles.loginPrompt}>
           Already have an account?

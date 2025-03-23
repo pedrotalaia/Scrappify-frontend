@@ -15,7 +15,7 @@ export default function Login() {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/users/login', {
+      const response = await axios.post('http://localhost:5000/api/auth/login', {
         email,
         password,
       });
@@ -33,6 +33,10 @@ export default function Login() {
         setError('Erro ao conectar ao servidor!');
       }
     }
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:5000/api/auth/google';
   };
 
   return (
@@ -64,7 +68,10 @@ export default function Login() {
           <button type="submit" className={styles.submitButton}>
             Login
           </button>
-          <button className={styles.googleButton}>Login with Google</button>
+          <button 
+            type="button" className={styles.googleButton} onClick={handleGoogleLogin}>
+              Login with Google
+          </button>
         </form>
 
         <p className={styles.registerPrompt}>
