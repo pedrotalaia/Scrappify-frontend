@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from '../styles/login.module.scss';
 import Link from 'next/link';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { initializeNotifications } from '../utils/notification';
 
 export default function Login() {
   const [email, setEmail] = useState(''); 
@@ -13,6 +14,14 @@ export default function Login() {
   const [emailPlaceholder, setEmailPlaceholder] = useState('Email');
   const [passwordPlaceholder, setPasswordPlaceholder] = useState('Password');
   const router = useRouter();
+
+  useEffect(() => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      .then((registration) => console.log('Service Worker registrado:', registration))
+      .catch((err) => console.error('Erro no Service Worker:', err));
+  }
+}, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -41,7 +50,7 @@ export default function Login() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+
       const response = await axios.post('http://localhost:5000/api/auth/login', {
         email,
         password,
@@ -50,6 +59,8 @@ export default function Login() {
       const { token } = response.data;
 
       localStorage.setItem('token', token);
+
+      await initializeNotifications();
 
       router.push('/homepage');
 
@@ -60,10 +71,6 @@ export default function Login() {
         setError('Erro ao conectar ao servidor!');
       }
     }
-  };
-
-  const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5000/api/auth/google';
   };
 
   const handleGoogleLogin = () => {
@@ -107,13 +114,7 @@ export default function Login() {
           <button type="submit" className={styles.submitButton}>
             Login
           </button>
-          <button 
-            type="button" 
-            className={styles.googleButton} 
-            onClick={handleGoogleLogin}
-          >
-            Login with Google
-          </button>
+
           <button 
             type="button" className={styles.googleButton} onClick={handleGoogleLogin}>
               Login with Google

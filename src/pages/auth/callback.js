@@ -1,20 +1,19 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { initializeNotifications } from '../../utils/notification';
 
-export default function AuthCallback() {
+export default function Callback() {
   const router = useRouter();
+  const { token } = router.query;
 
   useEffect(() => {
-    const { token } = router.query;
     if (token) {
       localStorage.setItem('token', token);
-      router.push('/homepage');
+      initializeNotifications().then(() => {
+        router.push('/homepage');
+      });
     }
-  }, [router.query]);
+  }, [token, router]);
 
-  return (
-    <div>
-      <h1>Autenticando...</h1>
-    </div>
-  );
+  return <div>Processando login com Google...</div>;
 }
