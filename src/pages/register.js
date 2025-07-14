@@ -10,12 +10,66 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [nameError, setNameError] = useState(false); 
+  const [emailError, setEmailError] = useState(false); 
+  const [passwordError, setPasswordError] = useState(false);
+  const [namePlaceholder, setNamePlaceholder] = useState('Name');
+  const [emailPlaceholder, setEmailPlaceholder] = useState('Email');
+  const [passwordPlaceholder, setPasswordPlaceholder] = useState('Password');
   const router = useRouter();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
+    setNameError(false);
+    setEmailError(false);
+    setPasswordError(false);
+    setNamePlaceholder('Name');
+    setEmailPlaceholder('Email');
+    setPasswordPlaceholder('Password');
+
+    let hasError = false;
+
+    if (!name) {
+      setNameError(true);
+      setNamePlaceholder('Preencha este campo');
+      hasError = true;
+    }
+
+    if (!email) {
+      setEmailError(true);
+      setEmailPlaceholder('Preencha este campo');
+      hasError = true;
+    }
+
+    if (!password) {
+      setPasswordError(true);
+      setPasswordPlaceholder('Preencha este campo');
+      hasError = true;
+    }
+
+    if (hasError) {
+      return; 
+    }
+
+    if (name.length > 50) {
+      setError('O nome não pode ter mais de 50 caracteres.');
+      setNameError(true);
+      return;
+    }
+
+    if (email.length > 100) {
+      setError('O email não pode ter mais de 100 caracteres.');
+      setNameError(true);
+      return;
+    }
+
+    if (password.length <= 6) {
+      setError('A palavra-passe deve ter mais de 6 caracteres.');
+      setPasswordError(true);
+      return;
+    }
 
     try {
       const response = await axios.post('http://localhost:5000/api/users/register', {
@@ -24,7 +78,7 @@ export default function Register() {
         password,
       });
 
-      setSuccess(response.data.msg || 'Usuário registrado com sucesso!');
+      setSuccess(response.data.msg || 'Usuário registado com sucesso!');
       setName('');
       setEmail('');
       setPassword('');
@@ -33,8 +87,12 @@ export default function Register() {
         router.push('/');
       }, 2000);
     } catch (error) {
-      setError(error.response?.data?.msg || 'Erro ao registrar usuário!');
+      setError(error.response?.data?.msg || 'Erro ao registar usuário!');
     }
+  };
+
+  const handleGoogleRegister = () => {
+    window.location.href = 'http://localhost:5000/api/auth/google';
   };
 
   return (
@@ -43,41 +101,58 @@ export default function Register() {
         <h2 className={styles.title}>Create Account</h2>
         {error && <p className={styles.error}>{error}</p>}
         {success && <p className={styles.success}>{success}</p>}
-        <form onSubmit={handleRegister} className={styles.form}>
+        <form onSubmit={handleRegister} className={styles.form} noValidate>
           <div className={styles.inputGroup}>
             <input
               type="text"
-              placeholder="Name"
-              className={styles.input}
+              placeholder={namePlaceholder}
+              className={`${styles.input} ${nameError ? styles.inputError : ''}`}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                setNameError(false);
+                setNamePlaceholder('Name');
+              }}
+              maxLength={50}
               required
             />
           </div>
           <div className={styles.inputGroup}>
             <input
               type="email"
-              placeholder="Email"
-              className={styles.input}
+              placeholder={emailPlaceholder}
+              className={`${styles.input} ${emailError ? styles.inputError : ''}`}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailError(false);
+                setEmailPlaceholder('Email');
+              }}
+              maxLength={100}
               required
             />
           </div>
           <div className={styles.inputGroup}>
             <input
               type="password"
-              placeholder="Password"
-              className={styles.input}
+              placeholder={passwordPlaceholder}
+              className={`${styles.input} ${passwordError ? styles.inputError : ''}`}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setPasswordError(false);
+                setPasswordPlaceholder('Password');
+              }}
+              minLength={7}
               required
             />
           </div>
           <button type="submit" className={styles.submitButton}>
             Sign Up
           </button>
-          <button className={styles.googleButton}>Sign Up with Google</button>
+          <button type="button" className={styles.googleButton} onClick={handleGoogleRegister}>
+            Sign Up with Google
+          </button>
         </form>
         <p className={styles.loginPrompt}>
           Already have an account?
