@@ -41,6 +41,12 @@ const ProductPage = () => {
   const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
+    let deviceId = localStorage.getItem('deviceId');
+    if (!deviceId) {
+      deviceId = crypto.randomUUID();
+      localStorage.setItem('deviceId', deviceId);
+    }
+
     const token = localStorage.getItem('token');
 
     if (!token) {
@@ -60,19 +66,16 @@ const ProductPage = () => {
           {
             headers: {
               Authorization: `Bearer ${token}`,
+              'x-device-id': deviceId,
             },
           }
         );
-
-        console.log('Resposta do backend (produto):', productResponse.data);
 
         const productData = productResponse.data.product;
 
         if (!productData || typeof productData !== 'object') {
           throw new Error('Produto não encontrado na resposta do backend');
         }
-
-        console.log('URL da imagem do produto:', productData.imageUrl);
 
         const prices = productData.offers && productData.offers[0] && productData.offers[0].prices
           ? productData.offers[0].prices
@@ -100,7 +103,6 @@ const ProductPage = () => {
         };
 
         setProduct(mappedProduct);
-        console.log('Estado product atualizado:', mappedProduct);
 
         const mappedPriceHistory = prices.map(price => ({
           date: price.date,
@@ -108,7 +110,6 @@ const ProductPage = () => {
         }));
 
         setPriceHistory(mappedPriceHistory);
-        console.log('Price History:', mappedPriceHistory);
 
         const favoritesResponse = await axios.get(
           'http://localhost:5000/api/favorites/',
@@ -137,7 +138,6 @@ const ProductPage = () => {
         }
       } finally {
         setLoading(false);
-        console.log('Loading finalizado, estado loading:', loading);
       }
     };
 
@@ -191,8 +191,6 @@ const ProductPage = () => {
       setError('Erro ao atualizar favoritos: ' + (err.response?.data?.msg || 'Tente novamente.'));
     }
   };
-
-  console.log('Estado antes da renderização:', { loading, error, product, isFavorite });
 
   if (loading) {
     return <Layout><div className={styles.loading}>Carregando...</div></Layout>;
@@ -267,7 +265,6 @@ const ProductPage = () => {
             alt={product.title}
             className={styles.productImage}
             onError={(e) => {
-              console.log('Erro ao carregar a imagem principal:', product.image);
               e.target.src = '/images/placeholder-phone.jpg';
             }}
           />
@@ -313,8 +310,14 @@ const ProductPage = () => {
           {priceHistory.length > 0 && chartData.datasets.length > 0 ? (
             <Line data={chartData} options={chartOptions} />
           ) : (
-            <p>Histórico de preços não disponível.</p>
+            <p>Sem histórico de preços disponível.</p>
           )}
+        </div>
+
+        <div className={styles.productLink}>
+          <a href={product.link} target="_blank" rel="noopener noreferrer">
+            Ver Produto no Site Original
+          </a>
         </div>
       </div>
     </Layout>
