@@ -276,6 +276,7 @@
   gap: 10px;
 }
 
+.headerNotificationButton,
 .headerEditButton,
 .headerLogoutButton {
   display: flex;
@@ -308,6 +309,50 @@
 
   &:hover {
     color: #d1d5db;
+  }
+}
+
+.headerNotificationButton {
+  color: #ffffff;
+
+  &:hover {
+    color: #d1d5db;
+  }
+}
+
+.notificationBadge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #DC2626;
+  color: #fff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.notificationList {
+  list-style: none;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.notificationItem {
+  padding: 10px;
+  border-bottom: 1px solid #E5E7EB;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #F5F7FA;
+  }
+
+  &:last-child {
+    border-bottom: none;
   }
 }
 

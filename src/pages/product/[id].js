@@ -210,7 +210,7 @@ const ProductPage = () => {
         label: `Preço (${product.currency})`,
         data: priceHistory.map((entry) => ({
           x: new Date(entry.date),
-          y: parseFloat(entry.price.replace(product.currency, '').replace(',', '.')),
+          y: parseFloat(entry.price.replace(product.currency, '').trim()),
         })),
         borderColor: '#007bff',
         backgroundColor: 'rgba(0, 123, 255, 0.1)',
@@ -228,7 +228,7 @@ const ProductPage = () => {
       },
       title: {
         display: true,
-        text: 'Variação do Preço ao Longo do Tempo',
+        text: 'Histórico de Preço',
       },
     },
     scales: {
@@ -252,8 +252,27 @@ const ProductPage = () => {
           text: `Preço (${product.currency})`,
         },
         beginAtZero: true,
+        ticks: {
+          callback: (value) => `${value} ${product.currency}`,
+        },
       },
     },
+  };
+
+  const handleViewPriceHistory = () => {
+    const chartElement = document.querySelector(`.${styles.priceChart}`);
+    if (chartElement) {
+      chartElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleSetPriceAlert = () => {
+    if (!isFavorite) {
+      setError('Adicione o produto aos favoritos para configurar alertas.');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+    setSelectedAlert('');
   };
 
   return (
@@ -277,6 +296,20 @@ const ProductPage = () => {
             <p><strong>Memória:</strong> {product.memory}</p>
             <p><strong>Fonte:</strong> {product.source}</p>
             <p><strong>Última Atualização:</strong> {product.lastUpdated ? new Date(product.lastUpdated).toLocaleDateString() : 'N/A'}</p>
+            <div className={styles.actionButtons}>
+              <button
+                className={styles.visitSiteButton}
+                onClick={() => window.open(product.link, '_blank', 'noopener,noreferrer')}
+              >
+                Ver Produto no Site Original
+              </button>
+              <button
+                className={styles.priceHistoryButton}
+                onClick={handleViewPriceHistory}
+              >
+                Histórico de Preço
+              </button>
+            </div>
             <div className={styles.favoriteSection}>
               {!isFavorite && (
                 <div className={styles.alertSelection}>
@@ -302,6 +335,7 @@ const ProductPage = () => {
                 {isFavorite ? '★' : '☆'}
               </span>
             </div>
+            {error && <div className={styles.error}>{error}</div>}
             {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
           </div>
         </div>
@@ -312,12 +346,6 @@ const ProductPage = () => {
           ) : (
             <p>Sem histórico de preços disponível.</p>
           )}
-        </div>
-
-        <div className={styles.productLink}>
-          <a href={product.link} target="_blank" rel="noopener noreferrer">
-            Ver Produto no Site Original
-          </a>
         </div>
       </div>
     </Layout>

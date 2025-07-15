@@ -3,7 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import Layout from '../components/layout.js';
 import styles from '../styles/Layout.module.scss';
 import axios from 'axios';
-import { FaMemory } from 'react-icons/fa';
+import { FaMemory, FaSearch } from 'react-icons/fa';
 import Link from 'next/link';
 
 const Homepage = () => {
@@ -13,10 +13,12 @@ const Homepage = () => {
   const [searchResult, setSearchResult] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [products, setProducts] = useState([]);
+  const [trendingProducts, setTrendingProducts] = useState([]);
   const [scrapeError, setScrapeError] = useState('');
+  const [loadingTrending, setLoadingTrending] = useState(true);
   const categories = [
     { name: 'Tech & Electrónica', image: '/images/gaming_accessories.jpg' },
-    { name: 'Fashion', image: '/images/gaming_accessories.jpg' },
+    { name: 'Fashion', image: '/images/fashion.jpg' },
     { name: 'Home', image: '/images/gaming_accessories.jpg' },
   ];
 
@@ -35,6 +37,49 @@ const Homepage = () => {
           setUserPlan(decodedToken.plan);
           setUserName(decodedToken.name);
           console.log('Plano do usuário:', decodedToken.plan);
+
+          const fetchTrendingProducts = async () => {
+            setLoadingTrending(true);
+            setScrapeError('');
+            console.log('Tentando buscar produtos em tendência...');
+            try {
+              const response = await axios.get('http://localhost:5000/api/products/trending', {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              });
+              console.log('Resposta da API:', response.data);
+              const productsData = response.data;
+              let productsArray = [];
+              if (Array.isArray(productsData)) {
+                productsArray = productsData;
+              } else if (productsData.products && Array.isArray(productsData.products)) {
+                productsArray = productsData.products;
+              } else if (productsData && typeof productsData === 'object') {
+                productsArray = [productsData];
+              } else {
+                throw new Error('Formato de dados inválido da API');
+              }
+              const mappedProducts = productsArray.map(product => ({
+                id: product._id || product.id,
+                name: product.name || 'Produto sem nome',
+                imageUrl: product.imageUrl || '/images/placeholder-phone.jpg',
+                size: product.memory ? [product.memory] : [],
+                color: product.color ? [product.color] : [],
+                price: product.offers && product.offers[0] && product.offers[0].prices && product.offers[0].prices[0]
+                  ? [`${product.offers[0].prices[0].value} ${product.currency || 'EUR'}`]
+                  : ['N/A'],
+              }));
+              setTrendingProducts(mappedProducts);
+              console.log('Produtos em tendência mapeados:', mappedProducts);
+            } catch (err) {
+              console.error('Erro ao carregar produtos em tendência:', err.message, err.response?.data);
+              setScrapeError('Erro ao carregar produtos em tendência: ' + (err.response?.data?.msg || err.message));
+            } finally {
+              setLoadingTrending(false);
+            }
+          };
+          fetchTrendingProducts();
         }
       } catch (error) {
         console.error('Erro ao decodificar o token:', error);
@@ -165,13 +210,53 @@ const Homepage = () => {
                 }}
               />
               <button className={styles.searchButton} onClick={handleSearch}>
-                Buscar
+                <FaSearch />
               </button>
             </div>
 
             {scrapeError && (
               <p className={styles.scrapeError}>{scrapeError}</p>
             )}
+
+            <div className={styles.trendingSection}>
+              <h2 className={styles.sectionTitle}>Produtos em Tendência</h2>
+              {scrapeError && <p className={styles.scrapeError}>{scrapeError}</p>}
+              {trendingProducts.length > 0 ? (
+                <div className={styles.productsGrid}>
+                  {trendingProducts.map((product) => (
+                    <Link
+                      key={product.id}
+                      href={`/product/${product.id}`}
+                      className={styles.productCardLink}
+                    >
+                      <div className={styles.productCard}>
+                        <h3>{product.name}</h3>
+                        <div className={styles.productImage}>
+                          <img
+                            alt={product.name}
+                            src={product.imageUrl}
+                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                            onError={(e) => (e.target.src = '/images/placeholder-phone.jpg')}
+                          />
+                        </div>
+                        <div className={styles.storagePriceRow}>
+                          <p className={styles.storage}>
+                            <FaMemory className={styles.detailIcon} />
+                            <span>{product.size.length > 0 ? product.size[0] : 'N/A'}</span>
+                          </p>
+                          <div className={styles.price}>
+                            <span className={styles.priceLabel}>Preço Médio</span>
+                            <span className={styles.priceValue}>
+                              {product.price.length > 0 ? product.price[0] : 'N/A'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : !scrapeError && <p>Nenhum produto em tendência disponível.</p>}
+            </div>
 
             {products.length > 0 && (
               <div className={styles.productsGrid}>
@@ -261,7 +346,7 @@ const Homepage = () => {
                 }}
               />
               <button className={styles.searchButton} onClick={handleSearch}>
-                Buscar
+                <FaSearch />
               </button>
             </div>
 
@@ -300,6 +385,46 @@ const Homepage = () => {
                 ))}
               </div>
             )}
+
+            <div className={styles.trendingSection}>
+              <h2 className={styles.sectionTitle}>Produtos em Tendência</h2>
+              {scrapeError && <p className={styles.scrapeError}>{scrapeError}</p>}
+              {trendingProducts.length > 0 ? (
+                <div className={styles.productsGrid}>
+                  {trendingProducts.map((product) => (
+                    <Link
+                      key={product.id}
+                      href={`/product/${product.id}`}
+                      className={styles.productCardLink}
+                    >
+                      <div className={styles.productCard}>
+                        <h3>{product.name}</h3>
+                        <div className={styles.productImage}>
+                          <img
+                            alt={product.name}
+                            src={product.imageUrl}
+                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                            onError={(e) => (e.target.src = '/images/placeholder-phone.jpg')}
+                          />
+                        </div>
+                        <div className={styles.storagePriceRow}>
+                          <p className={styles.storage}>
+                            <FaMemory className={styles.detailIcon} />
+                            <span>{product.size.length > 0 ? product.size[0] : 'N/A'}</span>
+                          </p>
+                          <div className={styles.price}>
+                            <span className={styles.priceLabel}>Preço Médio</span>
+                            <span className={styles.priceValue}>
+                              {product.price.length > 0 ? product.price[0] : 'N/A'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : !scrapeError && <p>Nenhum produto em tendência disponível.</p>}
+            </div>
 
             <div className={styles.categoriesSection}>
               <h3>Escolha uma categoria</h3>

@@ -67,6 +67,50 @@
     color: #e91e63;
 }
 
+.actionButtons {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.visitSiteButton,
+.priceHistoryButton,
+.priceAlertButton {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #4F46E5;
+  color: white;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #4338CA;
+  }
+
+  &:disabled {
+    background-color: #D1D5DB;
+    cursor: not-allowed;
+  }
+}
+
+.priceHistoryButton {
+  background-color: #10B981;
+
+  &:hover {
+    background-color: #0E9F6E;
+  }
+}
+
+.priceAlertButton {
+  background-color: #F59E0B;
+
+  &:hover {
+    background-color: #D97706;
+  }
+}
+
 .favoriteButton {
     padding: 10px 20px;
     background-color: #28a745;

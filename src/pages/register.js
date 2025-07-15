@@ -8,14 +8,20 @@ export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [birthDate, setBirthDate] = useState('');
+  const [sex, setSex] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [nameError, setNameError] = useState(false); 
   const [emailError, setEmailError] = useState(false); 
   const [passwordError, setPasswordError] = useState(false);
+  const [birthDateError, setBirthDateError] = useState(false);
+  const [sexError, setSexError] = useState(false);
   const [namePlaceholder, setNamePlaceholder] = useState('Name');
   const [emailPlaceholder, setEmailPlaceholder] = useState('Email');
   const [passwordPlaceholder, setPasswordPlaceholder] = useState('Password');
+  const [birthDatePlaceholder, setBirthDatePlaceholder] = useState('Birth Date (YYYY-MM-DD)');
+  const [sexPlaceholder, setSexPlaceholder] = useState('Sex (M/F/O)');
   const router = useRouter();
 
   const handleRegister = async (e) => {
@@ -25,6 +31,8 @@ export default function Register() {
     setNameError(false);
     setEmailError(false);
     setPasswordError(false);
+    setBirthDateError(false); 
+    setSexError(false); 
     setNamePlaceholder('Name');
     setEmailPlaceholder('Email');
     setPasswordPlaceholder('Password');
@@ -76,6 +84,8 @@ export default function Register() {
         name,
         email,
         password,
+        birthDate, 
+        sex,  
       });
 
       setSuccess(response.data.msg || 'Usuário registado com sucesso!');
@@ -144,6 +154,35 @@ export default function Register() {
                 setPasswordPlaceholder('Password');
               }}
               minLength={7}
+              required
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <input
+              type="date"
+              placeholder={birthDatePlaceholder}
+              className={`${styles.input} ${birthDateError ? styles.inputError : ''}`}
+              value={birthDate}
+              onChange={(e) => {
+                setBirthDate(e.target.value);
+                setBirthDateError(false);
+                setBirthDatePlaceholder('Birth Date (YYYY-MM-DD)');
+              }}
+              required
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <input
+              type="text"
+              placeholder={sexPlaceholder}
+              className={`${styles.input} ${sexError ? styles.inputError : ''}`}
+              value={sex}
+              onChange={(e) => {
+                setSex(e.target.value);
+                setSexError(false);
+                setSexPlaceholder('Sex (M/F/O)');
+              }}
+              maxLength={1}
               required
             />
           </div>

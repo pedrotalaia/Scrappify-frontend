@@ -3,7 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import Layout from '../components/layout';
 import styles from '../styles/account.module.scss';
-import { FaPencilAlt, FaSignOutAlt } from 'react-icons/fa';
+import { FaPencilAlt, FaSignOutAlt, FaBell } from 'react-icons/fa';
 
 const Account = () => {
   const [userName, setUserName] = useState('');
@@ -27,6 +27,8 @@ const Account = () => {
   const [cardCVV, setCardCVV] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [showNotifications, setShowNotifications] = useState(false); 
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -48,6 +50,21 @@ const Account = () => {
           console.log('Email definido no estado:', decodedToken.email);
           console.log('Imagem de perfil inicial (token):', decodedToken.profilePicture);
           console.log('Plano do usuário:', decodedToken.plan);
+
+          const fetchNotifications = async () => {
+            try {
+              const response = await axios.get('http://localhost:5000/api/favorites/notifications', {
+                headers: { Authorization: `Bearer ${token}` },
+              });
+              console.log('Resposta completa:', response); // Para depuração
+              console.log('Notificações:', response.data.notifications); // Verifica o array específico
+              setNotifications(response.data.notifications || []); // Extrai apenas o array notifications
+            } catch (error) {
+              console.error('Erro ao carregar notificações:', error);
+              setNotifications([]);
+            }
+          };
+          fetchNotifications();
         }
       } catch (error) {
         console.error('Erro ao decodificar o token:', error);
@@ -112,7 +129,6 @@ const Account = () => {
       const newProfileImage = response.data.user.profilePicture;
       setProfileImage(newProfileImage);
 
-      // Atualizar o token no localStorage se fornecido
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         const decodedToken = jwtDecode(response.data.token);
@@ -392,6 +408,11 @@ const Account = () => {
     window.location.href = 'mailto:sales@scrappy.com';
   };
 
+  const handleNotificationClick = (productId) => {
+    window.location.href = `/product/${productId}`; 
+    setShowNotifications(false); 
+  };
+
   console.log('FaPencilAlt:', FaPencilAlt, 'FaSignOutAlt:', FaSignOutAlt);
 
   const headerActions = (
@@ -412,6 +433,16 @@ const Account = () => {
         title="Logout"
       >
         <FaSignOutAlt />
+      </button>
+      <button
+        onClick={() => setShowNotifications(!showNotifications)}
+        className={styles.headerNotificationButton}
+        title="Notificações"
+      >
+        <FaBell />
+        {notifications.length > 0 && (
+          <span className={styles.notificationBadge}>{notifications.length}</span>
+        )}
       </button>
     </div>
   );
@@ -658,6 +689,36 @@ const Account = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {showNotifications && (
+          <div className={styles.modalOverlay} onClick={() => setShowNotifications(false)}>
+            <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+              <h2>Notificações</h2>
+              {notifications.length > 0 ? (
+                <ul className={styles.notificationList}>
+                  {notifications.map((notification) => (
+                    <li
+                      key={notification._id}
+                      className={styles.notificationItem}
+                      onClick={() => handleNotificationClick(notification.productId)}
+                    >
+                      {notification.message} - {new Date(notification.createdAt).toLocaleString()}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>Nenhuma notificação disponível.</p>
+              )}
+              <button
+                type="button"
+                className={styles.cancelButton}
+                onClick={() => setShowNotifications(false)}
+              >
+                Fechar
+              </button>
             </div>
           </div>
         )}
