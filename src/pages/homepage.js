@@ -266,7 +266,7 @@ const Homepage = () => {
                     href={`/product/${product.id}`}
                     className={styles.productCardLink}
                   >
-                    <div key={product.id} className={styles.productCard}>
+                    <div className={styles.productCard}>
                       <h3>{product.name}</h3>
                       <div className={styles.productImage}>
                         <img
@@ -357,31 +357,37 @@ const Homepage = () => {
             {products.length > 0 && (
               <div className={styles.productsGrid}>
                 {products.map(product => (
-                  <div key={product.id} className={styles.productCard}>
-                    <h3>{product.name}</h3>
-                    <div className={styles.productImage}>
-                      <img
-                        src={product.imageUrl}
-                        alt={product.name}
-                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                        onError={(e) => (e.target.src = '/images/placeholder-phone.jpg')}
-                      />
-                    </div>
-                    <div className={styles.storagePriceRow}>
-                      <p className={styles.storage}>
-                        <FaMemory className={styles.detailIcon} />
-                        <span>
-                          {product.size.length > 0 ? product.size[0] : 'N/A'}
-                        </span>
-                      </p>
-                      <div className={styles.price}>
-                        <span className={styles.priceLabel}>Preço Médio</span>
-                        <span className={styles.priceValue}>
-                          {product.price.length > 0 ? product.price[0] : 'N/A'}
-                        </span>
+                  <Link
+                    key={product.id}
+                    href={`/product/${product.id}`}
+                    className={styles.productCardLink}
+                  >
+                    <div className={styles.productCard}>
+                      <h3>{product.name}</h3>
+                      <div className={styles.productImage}>
+                        <img
+                          src={product.imageUrl}
+                          alt={product.name}
+                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                          onError={(e) => (e.target.src = '/images/placeholder-phone.jpg')}
+                        />
+                      </div>
+                      <div className={styles.storagePriceRow}>
+                        <p className={styles.storage}>
+                          <FaMemory className={styles.detailIcon} />
+                          <span>
+                            {product.size.length > 0 ? product.size[0] : 'N/A'}
+                          </span>
+                        </p>
+                        <div className={styles.price}>
+                          <span className={styles.priceLabel}>Preço Médio</span>
+                          <span className={styles.priceValue}>
+                            {product.price.length > 0 ? product.price[0] : 'N/A'}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
@@ -412,7 +418,7 @@ const Homepage = () => {
                             <FaMemory className={styles.detailIcon} />
                             <span>{product.size.length > 0 ? product.size[0] : 'N/A'}</span>
                           </p>
-                          <div className={styles.price}>
+  <div className={styles.price}>
                             <span className={styles.priceLabel}>Preço Médio</span>
                             <span className={styles.priceValue}>
                               {product.price.length > 0 ? product.price[0] : 'N/A'}

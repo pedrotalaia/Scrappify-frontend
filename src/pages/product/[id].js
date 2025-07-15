@@ -32,7 +32,7 @@ const ProductPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const [product, setProduct] = useState(null);
-  const [priceHistory, setPriceHistory] = useState([]);
+  const [priceHistoryBySource, setPriceHistoryBySource] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isFavorite, setIsFavorite] = useState(false);
@@ -48,7 +48,6 @@ const ProductPage = () => {
     }
 
     const token = localStorage.getItem('token');
-
     if (!token) {
       router.push('/');
       return;
@@ -77,39 +76,69 @@ const ProductPage = () => {
           throw new Error('Produto não encontrado na resposta do backend');
         }
 
-        const prices = productData.offers && productData.offers[0] && productData.offers[0].prices
-          ? productData.offers[0].prices
-          : [];
-        const latestPrice = prices.length > 0
-          ? prices.sort((a, b) => new Date(b.date) - new Date(a.date))[0].value
-          : null;
+        const prices =
+          productData.offers &&
+          productData.offers[0] &&
+          productData.offers[0].prices
+            ? productData.offers[0].prices
+            : [];
+
+        const latestPrice =
+          prices.length > 0
+            ? prices.sort((a, b) => new Date(b.date) - new Date(a.date))[0]
+                .value
+            : null;
 
         const isValidImageUrl = (url) => {
-          return url && typeof url === 'string' && (url.startsWith('http') || url.startsWith('/'));
+          return (
+            url &&
+            typeof url === 'string' &&
+            (url.startsWith('http') || url.startsWith('/'))
+          );
         };
 
         const mappedProduct = {
           title: productData.name || 'N/A',
-          image: isValidImageUrl(productData.imageUrl) ? productData.imageUrl : '/images/placeholder-phone.jpg',
-          price: latestPrice ? `${latestPrice} ${productData.currency}` : 'N/A',
+          image: isValidImageUrl(productData.imageUrl)
+            ? productData.imageUrl
+            : '/images/placeholder-phone.jpg',
+          price: latestPrice
+            ? `${latestPrice} ${productData.currency}`
+            : 'N/A',
           link: productData.url || '#',
           brand: productData.brand || 'N/A',
           model: productData.model || 'N/A',
           color: productData.color || 'N/A',
           memory: productData.memory || 'N/A',
-          source: productData.offers && productData.offers[0] ? productData.offers[0].source : 'N/A',
-          lastUpdated: productData.offers && productData.offers[0] ? productData.offers[0].lastUpdated : 'N/A',
+          source:
+            productData.offers && productData.offers[0]
+              ? productData.offers[0].source
+              : 'N/A',
+          lastUpdated:
+            productData.offers && productData.offers[0]
+              ? productData.offers[0].lastUpdated
+              : 'N/A',
           currency: productData.currency || 'N/A',
+          offers: productData.offers || [],
         };
 
         setProduct(mappedProduct);
 
-        const mappedPriceHistory = prices.map(price => ({
-          date: price.date,
-          price: `${price.value} ${productData.currency}`,
-        }));
+        const groupedPriceHistory = [];
 
-        setPriceHistory(mappedPriceHistory);
+        productData.offers?.forEach((offer) => {
+          if (offer.prices?.length > 0) {
+            groupedPriceHistory.push({
+              source: offer.source,
+              data: offer.prices.map((price) => ({
+                date: price.date,
+                value: price.value,
+              })),
+            });
+          }
+        });
+
+        setPriceHistoryBySource(groupedPriceHistory);
 
         const favoritesResponse = await axios.get(
           'http://localhost:5000/api/favorites/',
@@ -121,7 +150,10 @@ const ProductPage = () => {
         );
 
         const favoritesData = favoritesResponse.data.favorites || [];
-        const existingFavorite = favoritesData.find(fav => fav.productId._id === id);
+        const existingFavorite = favoritesData.find(
+          (fav) => fav.productId._id === id
+        );
+
         if (existingFavorite) {
           setIsFavorite(true);
           setFavoriteId(existingFavorite._id);
@@ -131,9 +163,13 @@ const ProductPage = () => {
           localStorage.removeItem('token');
           router.push('/');
         } else if (err.response?.status === 404) {
-          setError('Produto não encontrado. Verifique se o ID está correto ou tente novamente mais tarde.');
+          setError(
+            'Produto não encontrado. Verifique se o ID está correto ou tente novamente mais tarde.'
+          );
         } else {
-          setError('Erro ao carregar os detalhes do produto. Tente novamente.');
+          setError(
+            'Erro ao carregar os detalhes do produto. Tente novamente.'
+          );
           console.error('Erro na requisição:', err.response?.data || err.message);
         }
       } finally {
@@ -188,48 +224,56 @@ const ProductPage = () => {
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       console.error('Erro ao atualizar favoritos:', err.response?.data || err.message);
-      setError('Erro ao atualizar favoritos: ' + (err.response?.data?.msg || 'Tente novamente.'));
+      setError(
+        'Erro ao atualizar favoritos: ' +
+          (err.response?.data?.msg || 'Tente novamente.')
+      );
     }
   };
 
   if (loading) {
-    return <Layout><div className={styles.loading}>Carregando...</div></Layout>;
+    return (
+      <Layout>
+        <div className={styles.loading}>Carregando...</div>
+      </Layout>
+    );
   }
 
   if (error) {
-    return <Layout><div className={styles.error}>{error}</div></Layout>;
+    return (
+      <Layout>
+        <div className={styles.error}>{error}</div>
+      </Layout>
+    );
   }
 
   if (!product) {
-    return <Layout><div className={styles.error}>Produto não encontrado.</div></Layout>;
+    return (
+      <Layout>
+        <div className={styles.error}>Produto não encontrado.</div>
+      </Layout>
+    );
   }
 
   const chartData = {
-    datasets: [
-      {
-        label: `Preço (${product.currency})`,
-        data: priceHistory.map((entry) => ({
-          x: new Date(entry.date),
-          y: parseFloat(entry.price.replace(product.currency, '').trim()),
-        })),
-        borderColor: '#007bff',
-        backgroundColor: 'rgba(0, 123, 255, 0.1)',
-        fill: true,
-        tension: 0.4,
-      },
-    ],
+    datasets: priceHistoryBySource.map((sourceEntry, index) => ({
+      label: sourceEntry.source,
+      data: sourceEntry.data.map((entry) => ({
+        x: new Date(entry.date),
+        y: entry.value,
+      })),
+      borderColor: `hsl(${index * 70 % 360}, 70%, 50%)`,
+      backgroundColor: `hsla(${index * 70 % 360}, 70%, 50%, 0.2)`,
+      fill: false,
+      tension: 0.4,
+    })),
   };
 
   const chartOptions = {
     responsive: true,
     plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Histórico de Preço',
-      },
+      legend: { position: 'top' },
+      title: { display: true, text: 'Histórico de Preço por Loja' },
     },
     scales: {
       x: {
@@ -237,42 +281,18 @@ const ProductPage = () => {
         time: {
           unit: 'day',
           tooltipFormat: 'dd/MM/yyyy',
-          displayFormats: {
-            day: 'dd/MM',
-          },
+          displayFormats: { day: 'dd/MM' },
         },
-        title: {
-          display: true,
-          text: 'Data',
-        },
+        title: { display: true, text: 'Data' },
       },
       y: {
-        title: {
-          display: true,
-          text: `Preço (${product.currency})`,
-        },
+        title: { display: true, text: `Preço (${product.currency})` },
         beginAtZero: true,
         ticks: {
           callback: (value) => `${value} ${product.currency}`,
         },
       },
     },
-  };
-
-  const handleViewPriceHistory = () => {
-    const chartElement = document.querySelector(`.${styles.priceChart}`);
-    if (chartElement) {
-      chartElement.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const handleSetPriceAlert = () => {
-    if (!isFavorite) {
-      setError('Adicione o produto aos favoritos para configurar alertas.');
-      setTimeout(() => setError(''), 3000);
-      return;
-    }
-    setSelectedAlert('');
   };
 
   return (
@@ -296,20 +316,7 @@ const ProductPage = () => {
             <p><strong>Memória:</strong> {product.memory}</p>
             <p><strong>Fonte:</strong> {product.source}</p>
             <p><strong>Última Atualização:</strong> {product.lastUpdated ? new Date(product.lastUpdated).toLocaleDateString() : 'N/A'}</p>
-            <div className={styles.actionButtons}>
-              <button
-                className={styles.visitSiteButton}
-                onClick={() => window.open(product.link, '_blank', 'noopener,noreferrer')}
-              >
-                Ver Produto no Site Original
-              </button>
-              <button
-                className={styles.priceHistoryButton}
-                onClick={handleViewPriceHistory}
-              >
-                Histórico de Preço
-              </button>
-            </div>
+
             <div className={styles.favoriteSection}>
               {!isFavorite && (
                 <div className={styles.alertSelection}>
@@ -335,18 +342,46 @@ const ProductPage = () => {
                 {isFavorite ? '★' : '☆'}
               </span>
             </div>
+
             {error && <div className={styles.error}>{error}</div>}
-            {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
+            {successMessage && (
+              <div className={styles.successMessage}>{successMessage}</div>
+            )}
           </div>
         </div>
 
         <div className={styles.priceChart}>
-          {priceHistory.length > 0 && chartData.datasets.length > 0 ? (
+          {priceHistoryBySource.length > 0 ? (
             <Line data={chartData} options={chartOptions} />
           ) : (
             <p>Sem histórico de preços disponível.</p>
           )}
         </div>
+
+        {product.offers?.length > 0 && (
+          <div className={styles.offersList}>
+            <h2>Preços por Loja</h2>
+            {product.offers.map((offer, index) => {
+              const lastPrice =
+                offer.prices?.length > 0
+                  ? offer.prices.sort(
+                      (a, b) => new Date(b.date) - new Date(a.date)
+                    )[0].value
+                  : 'N/A';
+              return (
+                <div key={index} className={styles.offerItem}>
+                  <strong>{offer.source}:</strong>{' '}
+                  {lastPrice !== 'N/A'
+                    ? `${lastPrice} ${product.currency}`
+                    : 'Sem preço'}{' '}
+                  <a href={offer.url} target="_blank" rel="noopener noreferrer">
+                    Ver na loja
+                  </a>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </Layout>
   );
