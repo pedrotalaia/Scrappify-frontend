@@ -1,0 +1,392 @@
+.accountPage {
+  max-width: 100%;
+  margin: 0;
+  padding: 20px;
+}
+
+.accountDetails {
+  background-color: #f5f7fa;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+
+  p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .editIcon {
+      cursor: pointer;
+      font-size: 16px;
+      color: #4f46e5;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #4338ca;
+      }
+    }
+  }
+}
+
+.editProfileSection {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  border: 1px solid #E5E7EB;
+}
+
+.profileImageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  max-width: 200px;
+}
+
+.profileImage {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.profileImagePlaceholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+.clickableImageContainer {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    .profileImage,
+    .profileImagePlaceholder {
+      opacity: 0.7;
+      border: 2px solid #4f46e5;
+    }
+
+    &::after {
+      content: '✎';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      color: #4f46e5;
+      opacity: 0.9;
+    }
+  }
+}
+
+.editProfileButton {
+  background-color: #4f46e5;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px 0;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #4338ca;
+  }
+}
+
+.passwordForm,
+.planForm,
+.emailForm {
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 5px;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 360px;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+
+  label {
+    display: block;
+    font-size: 14px;
+    color: #1f2937;
+    margin-bottom: 5px;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+
+    &:focus {
+      border-color: #4f46e5;
+    }
+  }
+}
+
+.errorMessage {
+  color: #ef4444;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.successMessage {
+  color: #10b981;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.submitButton {
+  background-color: #10b981;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #059669;
+  }
+}
+
+.cancelButton {
+  background-color: #d1d5db;
+  color: #1f2937;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #b3b8c4;
+  }
+}
+
+.pricingPlans {
+  margin-top: 40px;
+  text-align: center;
+  max-width: 100%; 
+  margin-left: 0px; 
+  margin-right: 0px;
+
+  h2 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #1a1a1a;
+    margin-bottom: 30px;
+  }
+
+  .pricingCards {
+    display: flex;
+    justify-content: flex-start; 
+    gap: 20px;
+    flex-wrap: nowrap; 
+    min-width: unset; 
+    overflow-x: unset; 
+    padding: 10px 0; 
+
+    .pricingCard {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      width: 250px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: left;
+
+      h3 {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      p.price {
+        font-size: 32px;
+        font-weight: bold;
+        color: #4f46e5;
+        margin-bottom: 15px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: #4b5563;
+
+        li {
+          margin-bottom: 5px;
+        }
+      }
+
+      .activePlanButton {
+        background-color: #d3d3d3; 
+        cursor: not-allowed;
+        &:hover {
+          background-color: #d3d3d3; 
+        }
+      }
+
+      button {
+        background-color: #4f46e5;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 25px;
+        border: none;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+
+        &:hover {
+          background-color: #4338ca;
+        }
+      }
+    }
+  }
+}
+
+.headerActions {
+  display: flex;
+  gap: 10px;
+}
+
+.headerNotificationButton,
+.headerEditButton,
+.headerLogoutButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  background-color: transparent;
+  padding: 0;
+  font-size: 20px;
+
+  svg {
+    font-size: 20px;
+  }
+}
+
+.headerEditButton {
+  color: #ffffff;
+
+  &:hover {
+    color: #d1d5db;
+  }
+}
+
+.headerLogoutButton {
+  color: #ffffff;
+
+  &:hover {
+    color: #d1d5db;
+  }
+}
+
+.headerNotificationButton {
+  color: #ffffff;
+
+  &:hover {
+    color: #d1d5db;
+  }
+}
+
+.notificationBadge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #DC2626;
+  color: #fff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.notificationList {
+  list-style: none;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.notificationItem {
+  padding: 10px;
+  border-bottom: 1px solid #E5E7EB;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #F5F7FA;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #1f2937;
+  }
+
+  .modalButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+}
