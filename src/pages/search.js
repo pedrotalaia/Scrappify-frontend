@@ -10,8 +10,8 @@ import { jwtDecode } from 'jwt-decode';
 const SearchPage = () => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
-  const [originalProducts, setOriginalProducts] = useState([]); // Armazena os produtos originais da busca
-  const [products, setProducts] = useState([]); // Produtos filtrados
+  const [originalProducts, setOriginalProducts] = useState([]); 
+  const [products, setProducts] = useState([]); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [scrapeError, setScrapeError] = useState('');
@@ -41,7 +41,7 @@ const SearchPage = () => {
         setUserName(decodedToken.name);
         console.log('Plano do usuário:', decodedToken.plan);
         if (decodedToken.plan === 'freemium') {
-          setSelectedVendors(['Worten']);
+          setSelectedVendors(['Amazon']);
         } else if (decodedToken.plan === 'premium' || decodedToken.plan === 'pro' || decodedToken.plan === 'agency') {
           setSelectedVendors([]); 
         }
@@ -77,7 +77,7 @@ const SearchPage = () => {
         return;
       }
 
-      const vendorsToUse = userPlan === 'freemium' ? ['Worten'] : selectedVendors.length > 0 ? selectedVendors : ['Amazon', 'Worten'];
+      const vendorsToUse = userPlan === 'freemium' ? ['Amazon'] : selectedVendors.length > 0 ? selectedVendors : ['Amazon', 'Worten', 'MediaMarket'];
       const requestBody = {
         query: searchTerm.trim(),
         stores: vendorsToUse,
@@ -213,10 +213,11 @@ const SearchPage = () => {
     '1000-1200', '1200-1500', '1500-2000+'
   ];
 
-  const vendors = ['Amazon', 'Worten'];
+  const vendors = ['Amazon', 'Worten', 'MediaMarket'];
   const vendorLogos = {
     Amazon: '/images/amazon_logo.png',
     Worten: '/images/worten_logo.png',
+    MediaMarket: '/images/mediamarkt_logo.png',
   };
 
   return (

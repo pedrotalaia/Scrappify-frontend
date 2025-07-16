@@ -19,7 +19,7 @@ const Homepage = () => {
   const categories = [
     { name: 'Tech & Electrónica', image: '/images/gaming_accessories.jpg' },
     { name: 'Fashion', image: '/images/fashion.jpg' },
-    { name: 'Home', image: '/images/gaming_accessories.jpg' },
+    { name: 'Home', image: '/images/home.jpg' },
   ];
 
   useEffect(() => {
