@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import Layout from '../components/layout.js';
-import styles from '../styles/Layout.module.scss';
+import styles from '../styles/layout.module.scss';
 import axios from 'axios';
 import { FaMemory, FaSearch } from 'react-icons/fa';
 import Link from 'next/link';

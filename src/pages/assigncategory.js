@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import Layout from '../components/layout.js';
-import layoutStyles from '../styles/Layout.module.scss';
-import styles from '../styles/AssignCategory.module.scss';
+import layoutStyles from '../styles/layout.module.scss';
+import styles from '../styles/assigncategory.module.scss';
 import axios from 'axios';
 
 const AssignCategory = () => {
